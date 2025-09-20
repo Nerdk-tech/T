@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>THE HIDDEN DARK WEB</title>
+<style>
+  :root{
+    --bg:#000;
+    --matrix-green:#39ff14;
+    --panel: rgba(0,0,0,0.6);
+    --accent: #00e6b8;
+    --muted: #9aa3a8;
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  html,body{height:100%;margin:0;background:var(--bg);color:#cfeee0;}
+  canvas#matrix{position:fixed;inset:0;z-index:0;display:block;}
+  .app{
+    position:relative;
+    z-index:2;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    backdrop-filter: blur(2px);
+  }
+
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 18px;
+    gap:12px;
+    background:linear-gradient(90deg, rgba(0,0,0,0.45), rgba(0,0,0,0.2));
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+
+  .brand{
+    display:flex;align-items:center;gap:12px;
+  }
+  .logo {
+    width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#04120a,#062017);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--matrix-green);box-shadow:0 4px 18px rgba(0,255,100,0.03);
+  }
+  .title{font-size:18px;letter-spacing:1px}
+  nav.menu{display:flex;gap:8px;align-items:center}
+  button, .icon-btn {background:var(--panel);border:1px solid rgba(255,255,255,0.03);color:inherit;padding:8px 12px;border-radius:8px;cursor:pointer}
+  button:hover, .icon-btn:hover{transform:translateY(-2px);}
+
+  main.container{flex:1;display:grid;grid-template-columns:340px 1fr 360px;gap:18px;padding:18px;}
+  .panel{background:linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.38));border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 6px 30px rgba(0,0,0,0.6);color:#d9fff0;overflow:auto;max-height:calc(100vh - 160px)}
+  .left .links{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .social-row{display:flex;gap:8px;align-items:center}
+  .social-row button{display:flex;gap:8px;align-items:center;width:100%;justify-content:flex-start}
+  .content-edit{background:rgba(0,0,0,0.3);padding:12px;border-radius:8px;color:#bfeecf;min-height:120px}
+  .content-edit:focus{outline:2px dashed rgba(57,255,20,0.12);}
+
+  .center .hero{padding:18px;border-radius:10px;background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.06));min-height:260px}
+  .muted {color:var(--muted);font-size:13px}
+  .big-btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;background:linear-gradient(90deg,#062017,#00110a);border:1px solid rgba(57,255,20,0.06);cursor:pointer}
+
+  .right .list{list-style:none;padding:0;margin:0}
+  .right .list li{padding:8px 10px;border-bottom:1px dashed rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center}
+  .highlight{background:linear-gradient(90deg, rgba(57,255,20,0.06), rgba(0,0,0,0.03));padding:6px 8px;border-radius:6px;color:var(--matrix-green);font-weight:600}
+
+  footer{padding:12px 18px;text-align:center;color:var(--muted);border-top:1px solid rgba(255,255,255,0.02);background:linear-gradient(180deg, rgba(0,0,0,0.02), transparent)}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:9}
+  .modal{background:#07110a;border-radius:12px;padding:18px;width:92%;max-width:720px;border:1px solid rgba(255,255,255,0.03)}
+  .close{float:right;background:none;border:0;color:var(--muted);font-size:18px;cursor:pointer}
+  .audio-control{display:flex;align-items:center;gap:8px;margin-top:10px}
+  .small{font-size:13px;color:var(--muted)}
+
+  /* responsive */
+  @media (max-width:1000px){
+    main.container{grid-template-columns:1fr; padding:12px}
+    .right{order:3}
+    .left{order:1}
+    .center{order:2}
+  }
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+
+<div class="app" aria-live="polite">
+  <header>
+    <div class="brand">
+      <div class="logo">DW</div>
+      <div>
+        <div class="title">THE HIDDEN DARK WEB</div>
+        <div class="small muted">INSIDE THE WEB — explore.... Hacks are not monitored. we are destruction.</div>
+      </div>
+    </div>
+
+    <nav class="menu" aria-label="Main menu">
+  <button id="menuTop50" class="big-btn" title="Top 50 List">TOP 50</button>
+  <button id="menuCheck" class="big-btn" title="Check number safety">CHECK NUMBER</button>
+  <button id="menuAbout" class="big-btn" title="About">ABOUT</button>
+  <div style="width:8px"></div>
+
+  <div class="audio-control">
+    <audio id="bgAudio" autoplay loop>
+      <source src="dark-web.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+</nav>
+</header>
+
+  <main class="container" role="main">
+    <section class="left panel" aria-labelledby="socialHeading">
+      <h3 id="socialHeading">INSIDE THE WEB</h3>
+
+      <div class="muted">About / Buttons</div>
+      <div class="content-edit" contenteditable="true" id="aboutEditable" aria-label="About — edit this text">
+        <!-- LEAVE WHERE I'LL WRITE DESCRIPTION -->
+        H4CKERS COME HERE TO CHILL. DON'T ENTER HERE IF YOU DON'T KNOW WHAT YOU ARE DOING HERE. YOU WILL BE HIJACKED.
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="muted">Social shortcuts</div>
+      <div class="links">
+        <div class="social-row">
+          <button class="icon-btn" id="whatsappBtn" title="WhatsApp (opens placeholder)">
+            <!-- WhatsApp SVG -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M20.52 3.48A11.95 11.95 0 0 0 12 0C5.37 0 .06 5.31.06 11.94c0 2.11.55 4.18 1.6 6.01L0 24l6.23-1.59A11.9 11.9 0 0 0 12 23.94c6.63 0 11.94-5.31 11.94-11.94 0-3.19-1.24-6.18-3.42-8.52z" fill="#25D366"></path>
+              <path d="M17.46 14.32c-.28-.14-1.66-.82-1.92-.91-.26-.09-.45-.14-.64.14s-.74.91-.91 1.09c-.17.18-.34.21-.62.07-.28-.14-1.18-.44-2.25-1.39-.83-.74-1.39-1.64-1.55-1.92-.16-.28-.02-.43.12-.57.12-.12.28-.32.42-.48.14-.16.18-.28.28-.46.09-.18.05-.34-.03-.48-.08-.14-.64-1.55-.88-2.12-.23-.56-.47-.48-.64-.49-.16-.01-.34-.01-.52-.01-.18 0-.48.07-.73.34-.24.27-.92.9-.92 2.2 0 1.29.94 2.54 1.07 2.72.13.18 1.85 2.95 4.49 4.14 3.12 1.4 3.12.93 3.68.87.56-.07 1.79-.73 2.04-1.44.25-.71.25-1.32.18-1.44-.07-.12-.26-.18-.54-.32z" fill="#fff"></path>
+            </svg>
+            <span>WhatsApp</span>
+          </button>
+        </div>
+
+        <div class="social-row">
+          <button class="icon-btn" id="facebookBtn" title="Facebook (opens placeholder)">
+            <!-- Facebook SVG -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M22 12a10 10 0 1 0-11.5 9.9v-7h-2.2v-2.9h2.2V9.2c0-2.2 1.3-3.5 3.3-3.5.96 0 1.97.17 1.97.17v2.1h-1.08c-1.06 0-1.39.66-1.39 1.33v1.6h2.36l-.38 2.9h-1.98v7A10 10 0 0 0 22 12z" fill="#1877F2"></path>
+            </svg>
+            <span>Facebook</span>
+          </button>
+        </div>
+
+        <div class="social-row">
+          <button class="icon-btn" id="tiktokBtn" title="TikTok (opens placeholder)">
+            <!-- TikTok-ish SVG (stylized) -->
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 3v9.5a3.5 3.5 0 1 0 3.5-3.5V3h-3.5z" fill="#00F2EA"></path>
+              <path d="M14 2.5v6.9a3.5 3.5 0 1 0 3.5 3.5V8.2A4.5 4.5 0 0 1 14 2.5z" fill="#FF0050"></path>
+            </svg>
+            <span>TikTok</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+      <div class="muted">theses socials expose your secrets.</div>
+      <div class="content-edit" contenteditable="true" id="fakeEditable">
+        <!-- LEAVE WHERE I'LL WRITE FAKE SHIT THERE -->
+        We know you. through TikTok, WhatsApp, Facebook, 2 step verification can't save you. Even Mark Zuckerberg sees your face everyday. you don't just know it.
+      </div>
+    </section>
+
+    <section class="center panel" aria-labelledby="mainHeading">
+      <h2 id="mainHeading">WELCOME</h2>
+      <div class="hero">
+        <p class="muted">Secrets you all don't know.</p>
+
+        <div style="margin-top:12px">
+          <div class="muted">SECRETS</div>
+          <div class="content-edit" contenteditable="true" id="secretsEditable">
+            <!-- SECRETS YOU ALL DON'T KNOW -->
+             WHATSAPP CAN SEE YOUR CHATS
+             YOU ARE NOT END TO END ENCRYPTED 
+             IF YOU HAVEN'T DEPLOYED A BOT BEFORE YOU ARE MOST LIKELY GETTING SPIED ON
+             FACEBOOK SEES SCAMMERS FACE
+             TIKTOK SHOWS AND LEAKS EXPLICIT VIDEOS.
+             YOU DON'T KNOW 🙂. BUT WE DO.
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="muted">HOW TO KEEP YOUR WHATSAPP SAFE OR SOCIAL SAFE</div>
+        <div class="content-edit" contenteditable="true" id="saneEditable">
+          <!-- SANE THING -->
+          SEND US AN EMAIL WE WILL HELP. univversehackers@gmail.com.
+        </div>
+
+        <div style="height:18px"></div>
+        <div>
+          <button class="big-btn" id="openTop50Inline">Open TOP 50 (inline)</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="right panel" aria-labelledby="topHeading">
+      <h3 id="topHeading">TOP 50 — NONCHALANT ETHICAL H4CKERS</h3>
+      <p class="small muted">LIST F NONCHALANT SMART HACKERS.</p>
+
+      <ol class="list" id="top50List" style="margin-top:8px">
+        <!-- JS will populate the list -->
+      </ol>
+
+      <div style="height:12px"></div>
+      <div class="muted">Quick actions</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+        <button id="downloadBtn" class="big-btn">Download snapshot</button>
+        <button id="copyBtn" class="big-btn">Copy page text</button>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    ©DARK-LS-BS
+  </footer>
+</div>
+
+<!-- Modals -->
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" role="document" id="modal">
+    <button class="close" id="modalClose" aria-label="Close">&times;</button>
+    <div id="modalContent">
+      <!-- dynamic content -->
+    </div>
+  </div>
+</div>
+
+<script>
+/* MATRIX BACKGROUND - Canvas animation */
+(() => {
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  const init = () => {
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+    ctx.font = '14px monospace';
+    cols = Math.floor(w / 14);
+    drops = new Array(cols).fill(0);
+  };
+  let cols, drops;
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()*&^%+-/~{[|`]}";
+  function frame(){
+    ctx.fillStyle = 'rgba(0,0,0,0.1)';
+    ctx.fillRect(0,0,w,h);
+    ctx.fillStyle = 'rgba(57,255,20,0.85)';
+    ctx.font = '14px monospace';
+    for(let i=0;i<cols;i++){
+      const text = chars.charAt(Math.floor(Math.random() * chars.length));
+      ctx.fillText(text, i*14, drops[i]*14);
+      if(drops[i]*14 > h && Math.random() > 0.975) drops[i]=0;
+      drops[i]++;
+    }
+    requestAnimationFrame(frame);
+  }
+  window.addEventListener('resize', init);
+  init();
+  frame();
+})();
+
+/* UI behaviour */
+const modalBackdrop = document.getElementById('modalBackdrop');
+const modalContent = document.getElementById('modalContent');
+const modalClose = document.getElementById('modalClose');
+
+function openModal(html){
+  modalContent.innerHTML = html;
+  modalBackdrop.style.display = 'flex';
+  modalBackdrop.setAttribute('aria-hidden','false');
+}
+function closeModal(){
+  modalBackdrop.style.display = 'none';
+  modalBackdrop.setAttribute('aria-hidden','true');
+}
+modalClose.addEventListener('click', closeModal);
+modalBackdrop.addEventListener('click', (e)=>{ if(e.target === modalBackdrop) closeModal(); });
+
+/* Top 50 list (fictional handles, your name at #5) */
+const handles = [
+  "CipherShade",
+  "NeonSpectre",
+  "GhostFrame",
+  "ZeroLatitude",
+  "Daminī",           // <-- your name at #5
+  "QuietProbe",
+  "LunarShell",
+  "EchoBinary",
+  "SilentRoot",
+  "ByteMuse",
+  "NullPhantom",
+  "VelvetExploit",
+  "PaperTiger",
+  "ObsidianNode",
+  "CrimsonPing",
+  "MossVector",
+  "HushSignal",
+  "MosaicKey",
+  "CopperCloak",
+  "SoftLock",
+  "PaleProtocol",
+  "RogueSemaphore",
+  "GlassLoop",
+  "AmberSalt",
+  "PoliteWorm",
+  "CircuitBard",
+  "FrostByte",
+  "IvyFence",
+  "QuietHash",
+  "KindRoot",
+  "MenderShell",
+  "AtlasQuiet",
+  "FaintPulse",
+  "ThirdEcho",
+  "SableTrace",
+  "WispCipher",
+  "OliveBeacon",
+  "ZenKernel",
+  "DriftNode",
+  "MildOracle",
+  "PaperKey",
+  "GroveGuard",
+  "ShimmerGate",
+  "DuskHandle",
+  "LiltProxy",
+  "SlowLatch",
+  "HollowPing",
+  "StillPort",
+  "OpenQuiet"
+];
+
+const ol = document.getElementById('top50List');
+handles.forEach((h, idx) => {
+  const li = document.createElement('li');
+  const rank = idx + 1;
+  const left = document.createElement('div');
+  left.textContent = `${rank}. ${h}`;
+  if(rank === 5){
+    left.classList.add('highlight');
+    left.setAttribute('aria-current','true');
+  }
+  const right = document.createElement('div');
+  right.innerHTML = '<span class="small muted">ethical • nonchalant</span>';
+  li.appendChild(left);
+  li.appendChild(right);
+  ol.appendChild(li);
+});
+
+/* Menu buttons */
+document.getElementById('menuTop50').addEventListener('click', ()=>{
+  openModal(`<h2>Top 50 — Nonchalant Ethical H4ckers</h2><p class="small muted">Editable list below</p><div style="max-height:50vh;overflow:auto;margin-top:8px">${ol.outerHTML}</div>`);
+});
+document.getElementById('openTop50Inline').addEventListener('click', () => {
+  // Scroll the right panel into view
+  document.getElementById('topHeading').scrollIntoView({behavior:'smooth'});
+});
+document.getElementById('menuAbout').addEventListener('click', ()=>{
+  openModal(`<h2>About DARK WEB</h2><p class="muted">DARK HACKS V40000</p><div style="margin-top:8px">${document.getElementById('aboutEditable').innerHTML}</div>`);
+});
+document.getElementById('menuCheck').addEventListener('click', ()=>{
+  openModal(`<h2>Check if your number is safe</h2>
+    <p class="small muted">This is a placeholder tool. Do not paste private numbers here if you don't want them saved locally in your browser.</p>
+    <label class="small muted" style="display:block;margin-top:8px">Phone number (placeholder)</label>
+    <input type="text" id="phoneInput" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:#04120a;color:#dfffe7" placeholder="+234 800 000 0000" />
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button id="fakeCheckBtn" class="big-btn">Run check</button>
+      <button onclick="closeModal()" class="big-btn">Close</button>
+    </div>
+    <div id="fakeCheckResult" style="margin-top:10px;color:var(--muted)"></div>
+  `);
+  document.getElementById('fakeCheckBtn').addEventListener('click', ()=>{
+    const out = document.getElementById('fakeCheckResult');
+    out.textContent = 'Analysis complete — no obvious flags found (this is a UI-only placeholder).';
+  });
+});
+
+/* Social buttons open placeholders (or could link externally if you change URLs) */
+document.getElementById('whatsappBtn').addEventListener('click', ()=> {
+  openModal(`<h3>WhatsApp</h3><p class="small muted">WhatsApp shortcut. Replace with an actual link if you want to connect.</p>`);
+});
+document.getElementById('facebookBtn').addEventListener('click', ()=> {
+  openModal(`<h3>Facebook</h3><p class="small muted">Facebook shortcut. Edit the page to include your page link.</p>`);
+});
+document.getElementById('tiktokBtn').addEventListener('click', ()=> {
+  openModal(`<h3>TikTok</h3><p class="small muted">TikTok shortcut. Replace with your handle or link.</p>`);
+});
+
+/* Download page snapshot (simple): creates a text file of editable contents */
+document.getElementById('downloadBtn').addEventListener('click', ()=>{
+  const parts = {
+    about: document.getElementById('aboutEditable').innerText,
+    fake: document.getElementById('fakeEditable').innerText,
+    secrets: document.getElementById('secretsEditable').innerText,
+    sane: document.getElementById('saneEditable').innerText,
+    top50: Array.from(document.querySelectorAll('#top50List li')).map(li => li.innerText.trim())
+  };
+  const blob = new Blob([JSON.stringify(parts, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'dark-web-snapshot.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+/* Copy page text */
+document.getElementById('copyBtn').addEventListener('click', async ()=>{
+  const text = [
+    'ABOUT:',
+    document.getElementById('aboutEditable').innerText,
+    '',
+    ' AREA:',
+    document.getElementById('fakeEditable').innerText,
+    '',
+    'SECRETS:',
+    document.getElementById('secretsEditable').innerText
+  ].join('\\n\\n');
+  try {
+    await navigator.clipboard.writeText(text);
+    alert('Page text copied to clipboard.');
+  } catch (e) {
+    prompt('Copy the text below:', text);
+  }
+});
+
+/* Accessibility: close modal on Esc */
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape') closeModal();
+});
+
+/* Tiny safeguard: ensure the audio src is intact (this is just the user-provided link) */
+const audio = document.getElementById('bgAudio');
+audio.addEventListener('error', ()=>{
+  console.warn('Background audio failed to load — check the provided URL or replace it with a direct audio file URL.');
+});
+</script>
+</body>
+  </html>
